@@ -168,14 +168,14 @@ Reasons:
     if (mode === "course") maxTokens = 80;
     if (mode === "chatbot") maxTokens = 120;
 
-    // Build candidate model list: prefer GROQ_MODEL, then GROQ_MODEL_FALLBACK, then sensible defaults
+    // Build candidate model list: prefer GROQ_MODEL, then GROQ_MODEL_FALLBACK, then the requested/approved model
     const candidates = [];
     if (process.env.GROQ_MODEL) candidates.push(process.env.GROQ_MODEL);
     if (process.env.GROQ_MODEL_FALLBACK) {
       process.env.GROQ_MODEL_FALLBACK.split(",").map(s => s.trim()).forEach(s => { if (s) candidates.push(s); });
     }
-    // sensible default candidates (common current Groq model names)
-    if (candidates.length === 0) candidates.push("grok-1", "grok-mini-1");
+    // If nothing provided, default to the model you requested (llama-3.3-70b-versatile)
+    if (candidates.length === 0) candidates.push("llama-3.3-70b-versatile");
 
     let chatCompletion;
     let lastErr;
@@ -194,9 +194,10 @@ Reasons:
         break;
       } catch (e) {
         lastErr = e;
-        // If model was decommissioned, try next candidate; otherwise rethrow
-        if (e && e.message && e.message.includes("model_decommissioned")) {
-          console.warn("Model decommissioned, trying next model:", candidateModel);
+        const msg = e && e.message ? e.message : "";
+        // If model was decommissioned or not found or access denied, try next candidate; otherwise rethrow
+        if (msg.includes("model_decommissioned") || msg.includes("model_not_found") || msg.includes("does not exist") || e?.status === 404) {
+          console.warn("Model unavailable, trying next model:", candidateModel, "reason:", msg.split("\n")[0]);
           continue;
         }
         throw e;
