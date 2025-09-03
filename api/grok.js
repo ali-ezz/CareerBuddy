@@ -4,10 +4,10 @@ console.log("api/grok.js loaded");
 
 export default async function handler(req, res) {
   console.log("api/grok.js handler invoked", req.method, req.body);
+  const apiKey = process.env.GROK_API_KEY;
   if (req.method !== "POST") return res.status(405).end();
   try {
     const { jobTitle, jobDescription, mode } = req.body;
-    const apiKey = process.env.GROK_API_KEY;
 
     if (!apiKey) {
       return res.status(500).json({ error: "GROK_API_KEY is not set in environment variables." });
