@@ -168,16 +168,41 @@ Reasons:
     if (mode === "course") maxTokens = 80;
     if (mode === "chatbot") maxTokens = 120;
 
-    const model = process.env.GROQ_MODEL || "llama3-70b-8192";
-    const chatCompletion = await groq.chat.completions.create({
-      messages,
-      model,
-      temperature,
-      max_completion_tokens: maxTokens,
-      top_p: 1,
-      stream: false,
-      stop: null
-    });
+    // Build candidate model list: prefer GROQ_MODEL, then GROQ_MODEL_FALLBACK, then sensible defaults
+    const candidates = [];
+    if (process.env.GROQ_MODEL) candidates.push(process.env.GROQ_MODEL);
+    if (process.env.GROQ_MODEL_FALLBACK) {
+      process.env.GROQ_MODEL_FALLBACK.split(",").map(s => s.trim()).forEach(s => { if (s) candidates.push(s); });
+    }
+    // sensible default candidates (common current Groq model names)
+    if (candidates.length === 0) candidates.push("grok-1", "grok-mini-1");
+
+    let chatCompletion;
+    let lastErr;
+    for (const candidateModel of candidates) {
+      try {
+        chatCompletion = await groq.chat.completions.create({
+          messages,
+          model: candidateModel,
+          temperature,
+          max_completion_tokens: maxTokens,
+          top_p: 1,
+          stream: false,
+          stop: null
+        });
+        console.log("GROQ model used:", candidateModel);
+        break;
+      } catch (e) {
+        lastErr = e;
+        // If model was decommissioned, try next candidate; otherwise rethrow
+        if (e && e.message && e.message.includes("model_decommissioned")) {
+          console.warn("Model decommissioned, trying next model:", candidateModel);
+          continue;
+        }
+        throw e;
+      }
+    }
+    if (!chatCompletion) throw lastErr;
 
     const content = chatCompletion.choices?.[0]?.message?.content || "No result.";
     console.log("Grok AI response for mode:", mode, "\n", content);
