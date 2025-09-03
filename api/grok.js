@@ -168,9 +168,10 @@ Reasons:
     if (mode === "course") maxTokens = 80;
     if (mode === "chatbot") maxTokens = 120;
 
+    const model = process.env.GROQ_MODEL || "llama3-70b-8192";
     const chatCompletion = await groq.chat.completions.create({
       messages,
-      model: "llama3-70b-8192",
+      model,
       temperature,
       max_completion_tokens: maxTokens,
       top_p: 1,
@@ -257,6 +258,12 @@ Top reasons:
     console.error("Request body:", req.body);
     console.error("GROK_API_KEY present:", !!process.env.GROK_API_KEY, "apiKey starts with:", apiKey ? apiKey.slice(0, 6) : "undefined");
     console.error("Error stack:", err.stack);
+    if (err && err.message && err.message.includes("model_decommissioned")) {
+      return res.status(500).json({
+        error: "Model decommissioned",
+        details: "The model configured is decommissioned. Set GROQ_MODEL to a supported model (see https://console.groq.com/docs/deprecations)."
+      });
+    }
     res.status(500).json({ error: "Grok API error", details: err.message });
   }
 }
