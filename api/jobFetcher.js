@@ -5,9 +5,9 @@ export default async function handler(req, res) {
     const q = req.query || {};
     const params = new URLSearchParams();
 
-    // support either `keyword` or `search`
-    const search = q.search || q.keyword;
-    if (search) params.set('search', search);
+    // support either `keyword` or `search`. Treat special keyword 'trending' as no search filter
+    const search = (q.search || q.keyword || '').toString();
+    if (search && search.toLowerCase() !== 'trending') params.set('search', search);
 
     if (q.category) params.set('category', q.category);
     if (q.company_name) params.set('company_name', q.company_name);
