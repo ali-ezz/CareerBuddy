@@ -1,108 +1,89 @@
-# CareerBuddy – AI-Powered Career Intelligence Platform
+# CareerBuddy
 
-CareerBuddy is a modern, AI-driven job discovery and career guidance platform. It leverages advanced AI models to analyze thousands of jobs, provide personalized career insights, and help users understand how safe different roles are from AI disruption.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Status](https://img.shields.io/badge/status-in%20development-orange.svg)
+![Language](https://img.shields.io/badge/language-JavaScript-yellow.svg)
 
-## Features
+CareerBuddy is an AI-powered career intelligence web app that helps users discover job opportunities, estimate AI disruption risk, and get guided career advice.
 
-- **AI-Powered Job Risk Analysis:**  
-  Each job listing is analyzed by Groq's Llama models to estimate its safety from AI disruption, with a clear score and an explanation ("Why this score?") shown in the job details.
+## Quick Start
 
-- **AI Career Coach:**  
-  An interactive AI assistant helps users explore career options, improve their resumes, and get actionable advice tailored to their interests and skills.
-
-- **Smart Search & Filters:**  
-  Search jobs by title, skills, or interests. Filter by location, experience, salary, remote options, and more.
-
-- **Trending & Relevant Jobs:**  
-  See trending opportunities and jobs most relevant to your profile.
-
-- **Market Insights:**  
-  Discover in-demand skills, salary trends, and remote work statistics.
-
-- **Modern UI/UX:**  
-  Responsive, visually appealing design with smooth animations and enhanced accessibility.
-
-## How It Works
-
-- **Job Data:**  
-  Jobs are fetched from the Remotive API.
-
-- **AI Risk Analysis:**  
-  For each job, the backend (`/api/grok`) sends the job title and description to Groq's Llama model, returning a risk score (0-100) and a natural language explanation.
-
-- **Frontend:**  
-  Built with vanilla JS and CSS, the frontend displays jobs, explanations, and provides an AI chat assistant.
-
-## Getting Started
-
-### 1. Clone the repository
+### Clone repository
 
 ```bash
-git clone https://github.com/yourusername/career-buddy-with-ai.git
-cd career-buddy-with-ai
+git clone https://github.com/ali-ezz/CareerBuddy.git
+cd CareerBuddy
 ```
 
-### 2. Install dependencies
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Set up environment variables
+### Configure environment
 
-Create a `.env` file (or use your deployment platform's environment settings):
+Create a `.env` file in the repo root with your API key(s):
 
+```env
+GROK_API_KEY=your-groq-api-key
 ```
-GROK_API_KEY=your-groq-api-key-here
-```
 
-### 4. Run locally
-
-If using Next.js or Vercel serverless functions:
+### Run locally
 
 ```bash
 npm run dev
 ```
 
-Then open [http://localhost:3000](http://localhost:3000).
+Then open the local URL shown by the development server.
 
-### 5. Deploy
+### Deploy
 
-Deploy to [Vercel](https://vercel.com/) for best results.  
-Set the `GROK_API_KEY` in your Vercel project environment variables.
+This project is designed to run on Vercel with serverless functions in `api/`.
 
-## File Structure
-
+```bash
+npx vercel login
+npx vercel
 ```
+
+## Features
+
+- AI-powered job risk scoring for AI disruption
+- Personalized career guidance and insights
+- Job search filters for title, skills, location, and remote work
+- Trending job discovery and role relevance scoring
+- Responsive, accessible vanilla HTML/CSS/JS frontend
+
+## Project Structure
+
+```text
 /
 ├── api/
-│   ├── grok.js         # API route for Groq AI risk analysis
-│   └── jobFetcher.js   # API route for fetching jobs from Remotive
-├── script.js           # Main frontend logic
-├── index.html          # Main HTML file
-├── style.css           # Base styles
-├── package.json        # Project dependencies
-├── README.md           # This file
-└── ...
+│   ├── grok.js         # Groq AI risk analysis API route
+│   └── jobFetcher.js   # Job data fetching API route
+├── .github/           # GitHub metadata and issue templates
+├── app.js             # Frontend application logic
+├── index.html         # Main page
+├── script.js          # Client-side interaction logic
+├── style.css          # Application styling
+├── package.json       # Dependencies and scripts
+├── LICENSE            # Project license
+├── CONTRIBUTING.md    # Contribution guidelines
+├── CODE_OF_CONDUCT.md # Expected contributor behavior
+├── SECURITY.md        # Vulnerability reporting guidance
+└── README.md          # Project overview and setup
 ```
 
-## Tech Stack
+## Usage
 
-- **Frontend:** HTML, CSS, JavaScript (Vanilla)
-- **Backend:** Node.js (Vercel Serverless Functions)
-- **APIs:** Remotive (jobs), Groq (AI/LLM)
-- **Deployment:** Vercel
+1. Open the app in the browser.
+2. Browse job listings and view AI disruption risk scores.
+3. Ask the career assistant for job, skill, and resume guidance.
 
-## Credits
+## Contribution
 
-- [Remotive API](https://remotive.com/api/remote-jobs)
-- [Groq AI](https://groq.com/)
-- [Llama Models](https://llama.meta.com/)
+Contributions are welcome. See `CONTRIBUTING.md` for issue reporting, pull request guidance, and branch naming.
 
 ## License
 
-MIT
-
----
-
-**CareerBuddy** – Discover your future, powered by AI.
+This project is licensed under the MIT License. See `LICENSE`.
